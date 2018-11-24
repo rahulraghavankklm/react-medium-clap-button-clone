@@ -122,20 +122,20 @@ const ClapsSessionCount = styled.div`
   font-size: 16px;
   padding: 4px;
   position: relative;
-  top: 40px;
+  top: 0px;
   transition: all 0.2s ease-in-out;
 
   ${props =>
     props.isClapping &&
     css`
-      top: -30px;
+      transform: translateY(-30px);
       opacity: 1;
     `}
 
   ${props =>
     !props.isClapping &&
     css`
-      top: -80px;
+      transform: translateY(-80px);
       opacity: 0;
     `}
 `;
