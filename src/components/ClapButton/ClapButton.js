@@ -2,6 +2,7 @@ import React from "react";
 import styled, { css, keyframes } from "styled-components";
 import mojs from "mo-js";
 import debounce from 'lodash/debounce'
+import throttle from 'lodash/throttle'
 
 const shockwave = keyframes`
   0% {
@@ -47,6 +48,7 @@ const ClapButton = styled.button`
 
   &:active {
     box-shadow: none;
+    animation: none;
   }
 
   ${props =>
@@ -159,10 +161,7 @@ class ClapButtonContainer extends React.Component {
         userClaps: 0,
         totalClaps: prevState.totalClaps - prevState.userClaps,
         clapsInARow: 0
-      }),
-      () => {
-        // this.postClapsData()
-      }
+      })
     );
   };
 
@@ -179,7 +178,7 @@ class ClapButtonContainer extends React.Component {
       isClapped: true,
       isClapping: true
     }), () => {
-      // this.postClapsData();
+      this.handleBurstAnimation()
     });
   };
 
@@ -199,7 +198,6 @@ class ClapButtonContainer extends React.Component {
     e.preventDefault();
     clearInterval(this.clapRepeatTimer);
     this.removeClapsSession();
-    // this.postClapsData()
   };
 
   addClapSession = async () => {
@@ -247,6 +245,29 @@ class ClapButtonContainer extends React.Component {
     console.log("POST claps to API: ", this.state.userClaps);
   }, 100);
 
+  handleBurstAnimation = throttle(() => {
+    const circleBurst = new mojs.Burst({
+      parent: '#clapButton',
+      radius: {50:100},
+      angle: { 0: 25 },
+      count: 10,
+      origin: '50% 50%',
+      children: {
+        shape: ['circle', 'polygon'],
+        fill: [ 'green', 'orange' ],
+        delay: 100,
+        isShowEnd: false,
+        speed: 0.2,
+        radius: {3: 0},
+        easing: mojs.easing.bezier(0.1, 1, 0.3, 1),
+        degreeShift: 'rand(25, 360)',
+      }
+    })
+
+    circleBurst.replay();
+  }, 300)
+
+
   render() {
     const {
       userClaps,
@@ -271,6 +292,7 @@ class ClapButtonContainer extends React.Component {
           isClapping={isClapping}
           clapped={isClapped}
           ref={this.clapButton}
+          id='clapButton'
         >
           <HandIcon role="img" aria-label="clap" clapped={isClapped}>
             <svg
