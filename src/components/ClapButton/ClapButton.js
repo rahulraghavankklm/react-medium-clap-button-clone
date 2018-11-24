@@ -206,13 +206,13 @@ class ClapButtonContainer extends React.Component {
     }));
   };
 
-  removeClapsSession = async () => {
+  removeClapsSession = debounce(async () => {
     setTimeout(() => {
       this.setState({
         clapsInARow: 0
       });
     }, 100);
-  };
+  },10);
 
   componentDidMount() {
 
@@ -286,7 +286,7 @@ class ClapButtonContainer extends React.Component {
       <ClapButtonWrap>
         <ClapCount isClapping={isClapping}>{totalClaps}</ClapCount>
         <ClapsSessionCount isClapping={clapsInARow !== 0}>
-          {clapsInARow}
+          +{clapsInARow}
         </ClapsSessionCount>
         <ClapButton
           isClapping={isClapping}
